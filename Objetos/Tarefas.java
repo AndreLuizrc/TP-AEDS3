@@ -128,7 +128,7 @@ public class Tarefas implements Registro {
             dos.writeBoolean(false);
         }
 
-        dos.writeUTF(this.status.toString());
+        dos.writeByte(this.status.getValue());
         dos.write(this.priority);
         dos.writeInt(idCategoria);
 
@@ -151,7 +151,7 @@ public class Tarefas implements Registro {
             this.doneAt = null;
         }
 
-        this.status = Status.valueOf(dis.readUTF());
+        this.status = Status.fromByte(dis.readByte());
         this.priority = (byte) dis.read();
         this.idCategoria = dis.readInt();
     }
