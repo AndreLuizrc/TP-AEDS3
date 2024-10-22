@@ -117,15 +117,15 @@ A classe `Categoria` implementa a interface `Registro` e representa uma categori
 
 ### Construtores
 
-- **Categoria(int i, String n)** Inicializa uma categoria com os valores de id e nome determinados por parametro.
-- **Categoria(String n)** Inicializa uma categoria com ID padrão "-1" e define o nome com base no valor passado por paramentro.
-- **Categoria()** Inicializa uma categoria com valores padrão: id = -1, nome = "".
+- **Categoria(int i, String n)**: Inicializa uma categoria com os valores de id e nome determinados por parametro.
+- **Categoria(String n)**: Inicializa uma categoria com ID padrão "-1" e define o nome com base no valor passado por paramentro.
+- **Categoria()**: Inicializa uma categoria com valores padrão: id = -1, nome = "".
 
 ### Métodos
 
 - `void setId(int id)`: Determina o id da categoria.
 - `int getId()`: Recupera o id da categoria.
-- `void setNome(Strinf nome)`: Determina o nome da categoria.
+- `void setNome(String nome)`: Determina o nome da categoria.
 - `String getNome()`: Recupera o Nome da tarefa.
 - `String toString()`: Retorna o objeto categoria como uma string.
 
