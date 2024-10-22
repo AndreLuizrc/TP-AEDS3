@@ -342,7 +342,7 @@ public class MenuTarefas {
                     option = 0;
                     break;
                 case 2:
-                    sts = Status.PROGRESSO;
+                    sts = Status.EM_ANDAMENTO;
                     option = 0;
                     break;
                 case 3:
