@@ -2,10 +2,10 @@ package Objetos;
 //envio
 
 import Interfaces.Registro;
-import Utils.Status;
 
 import java.io.*;
 import java.time.LocalDate;
+
 import Arquivos.ArquivoCategoria;
 
 public class Tarefas implements Registro {
@@ -13,45 +13,49 @@ public class Tarefas implements Registro {
     private String nome;
     private LocalDate createdAt;
     private LocalDate doneAt;
-    private Status status;
+    private RotuloStatus status;
     private byte priority;
     private int idCategoria;
+    private String descricao;
 
     public Tarefas() {
         this.id = 0;
         this.nome = "ABCDEFGHIJKLMNQRST";
         this.createdAt = LocalDate.now();
         this.doneAt = null;
-        this.status = Status.PENDENTE;
+        this.status = RotuloStatus.PENDENTE;
         this.priority = 1;
         this.idCategoria = 0;
+        this.descricao = "";
     }
 
-    public Tarefas(int id, String nome, LocalDate createdAt) {
+    public Tarefas(int id, String nome) {
         this.id = id;
         this.nome = nome;
         this.createdAt = LocalDate.now();
         this.doneAt = null;
-        this.status = Status.PENDENTE;
+        this.status = RotuloStatus.PENDENTE;
         this.priority = 1;
         this.idCategoria = 0;
+        this.descricao = "";
     }
 
-    public Tarefas(String nome) {
+    public Tarefas(String nome, String descricao) {
         this.id = 0;
         this.nome = nome;
         this.createdAt = LocalDate.now();
         this.doneAt = null;
-        this.status = Status.PENDENTE;
+        this.status = RotuloStatus.PENDENTE;
         this.priority = 1;
         this.idCategoria = 0;
+        this.descricao = descricao;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(RotuloStatus status) {
         this.status = status;
     }
 
-    public Status getStatus() {
+    public RotuloStatus getStatus() {
         return status;
     }
 
@@ -105,12 +109,20 @@ public class Tarefas implements Registro {
         return this.id;
     }
 
-    public int getIdCategoria(){
+    public int getIdCategoria() {
         return this.idCategoria;
     }
 
-    public void setIdCategoria(int idCategoria){
+    public void setIdCategoria(int idCategoria) {
         this.idCategoria = idCategoria;
+    }
+
+    public String getDescricao() {
+        return descricao;
+    }
+
+    public void setDescricao(String descricao) {
+        this.descricao = descricao;
     }
 
     @Override
@@ -151,30 +163,31 @@ public class Tarefas implements Registro {
             this.doneAt = null;
         }
 
-        this.status = Status.fromByte(dis.readByte());
+        this.status = RotuloStatus.fromByte(dis.readByte());
         this.priority = (byte) dis.read();
         this.idCategoria = dis.readInt();
     }
 
     @Override
-    public String toString(){
+    public String toString() {
         try {
             return "\nID........: " + this.id +
                     "\nName......: " + unfiller(this.nome) +
                     "\nCreated At: " + this.createdAt.toString() +
                     "\nStatus....: " + this.status +
-                    (this.status == Status.CONCLUIDO ? "\nDone at...: " + this.doneAt.toString() : "") +
+                    (this.status == RotuloStatus.CONCLUIDO ? "\nDone at...: " + this.doneAt.toString() : "") +
                     "\nPriority..: " + getPriorityType(this.priority) +
-                    "\nCategoria.: " + getNomeCategoria(this.idCategoria);
+                    "\nCategoria.: " + getNomeCategoria(this.idCategoria) +
+                    "\nDescricao.: " + getDescricao();
         } catch (Exception e) {
             e.printStackTrace();
         }
         return " ";
     }
 
-    public String getNomeCategoria(int id) throws Exception{
+    public String getNomeCategoria(int id) throws Exception {
         ArquivoCategoria arqCategoria = new ArquivoCategoria();
-        
+
         return unfiller(arqCategoria.read(id).getNome());
     }
 
@@ -194,7 +207,7 @@ public class Tarefas implements Registro {
         return nome;
     }
 
-    public String unfiller(String nome){
+    public String unfiller(String nome) {
         char[] tmp = new char[20];
         int j = 0;
         for (int i = 0; i < 20; i++) {

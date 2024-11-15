@@ -2,10 +2,11 @@ package Utils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import Arquivos.ArquivoRotuloStatus;
 import Arquivos.ArquivoTarefa;
-import Objetos.Categoria;
-import Objetos.ParIdId;
-import Objetos.Tarefas;
+import Objetos.*;
+
 import java.time.LocalDate;
 import java.text.Normalizer;
 import java.io.InputStreamReader;
@@ -16,11 +17,13 @@ public class MenuTarefas {
 
     ArquivoTarefa arqTarefas;
     ArquivoCategoria arqCategoria;
+    ArquivoRotuloStatus arquivoRotuloStatus;
     private Scanner console = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
     public MenuTarefas() throws Exception {
         arqTarefas = new ArquivoTarefa();
         arqCategoria = new ArquivoCategoria();
+        arquivoRotuloStatus = new ArquivoRotuloStatus();
     }
 
     public void menu() throws Exception {
@@ -46,7 +49,7 @@ public class MenuTarefas {
 
             switch (opcao) {
                 case 1:
-                    buscarTarefa();
+                    workflowBusca();
                     break;
                 case 2:
                     incluirTarefa();
@@ -70,7 +73,30 @@ public class MenuTarefas {
         } while (opcao != 0);
     }
 
-    public void buscarTarefa() throws Exception {
+    public void workflowBusca() throws Exception {
+        System.out.println("\nDeseja buscar tarefa por nome, rotulo ou termo?\n");
+        String escolhaDoUsuario = console.nextLine();
+        String escolhaTratada = escolhaNormalizer(escolhaDoUsuario);
+
+        if (escolhaTratada.equals("nome")) {
+            buscarTarefaPorNome();
+        }
+
+        if (escolhaTratada.equals("termo")) {
+            buscarTarefaPorTermo();
+        }
+
+        if(escolhaTratada.equals("rotulo")) {
+            buscaPorRotulo();
+        }
+
+    }
+
+    public String escolhaNormalizer(String str) {
+        return str.toLowerCase().trim();
+    }
+
+    public void buscarTarefaPorNome() throws Exception {
         System.out.println("\nPesquisa de tarefa: ");
         System.out.println("\nDigite o nome da Tarefa que deseja pesquisar: ");
 
@@ -85,21 +111,79 @@ public class MenuTarefas {
         }
     }
 
+    public void buscaPorRotulo() throws Exception {
+        System.out.println("\nPesquisa de tarefa: ");
+        System.out.println("\nVoce deseja buscar por status ou por categoria? ");
+        Rotulo rot = null;
+        String escolhaDoUsuario = console.nextLine();
+        String escolhaTratada = escolhaNormalizer(escolhaDoUsuario);
+
+        if (escolhaTratada.equals("categoria")) {
+            String nomeCategoria = console.nextLine();
+            String nomeLimpo = tratarNome(nomeCategoria);
+
+            Categoria categoria = arqCategoria.read(nomeLimpo);
+            ArrayList<Rotulo> lista = new ArrayList<>();
+            for(int i = 0; i < 3; i++){
+                rot = new Rotulo(categoria.getId(), i);
+                lista.add(rot);
+            }
+
+            for(var element : lista){
+                System.out.println(element);
+            }
+
+        }
+
+
+        if (escolhaTratada.equals("status")) {
+//            String status = console.nextLine();
+//            String statusTratado = status.toUpperCase().trim();
+//
+//            if (statusTratado.equals("PENDENTE")) {
+//                rot = new Rotulo();
+//            }
+            ArrayList<Rotulo> lista = new ArrayList<>();
+            rot = new Rotulo(1, 2);
+
+
+        }
+
+        var obj = arquivoRotuloStatus.read(rot);
+        if (obj != null) {
+            System.out.println(obj);
+        } else {
+            System.out.println("Tarefa nao encontrada");
+        }
+    }
+
+    public void buscarTarefaPorTermo() throws Exception {
+        System.out.println("Busca por termo");
+    }
+
     public void incluirTarefa() throws Exception {
         String nome;
+        String descricao;
         int categoria;
 
         System.out.println("\nInclusão de tarefa: ");
         System.out.println("\nDigite o nome da Tarefa que deseja incluir: ");
         nome = filler(console.nextLine());
 
+        System.out.println("\nDigite uma descricao para sua tarefa: ");
+        descricao = console.nextLine();
+
         System.out.println("\nEscolha a categoria a qual esta tarefa pertence: ");
         categoria = getCategoria();
 
         if(categoria != 0){
-            Tarefas novaTarefa = new Tarefas(nome);
+            Tarefas novaTarefa = new Tarefas(nome, descricao);
             novaTarefa.setIdCategoria(categoria);
             arqTarefas.create(novaTarefa);
+
+            Rotulo rotulo = new Rotulo(novaTarefa.getId(), novaTarefa.getStatus().getValue());
+            arquivoRotuloStatus.create(rotulo);
+
             System.out.println("Tarefa incluída com sucesso!!\n");
         }else{
             System.out.println("ERRO");
@@ -168,10 +252,10 @@ public class MenuTarefas {
                     break;
                 case 2:
                     // alterarStatusTarefa();
-                    Status newStatus = getNewStatus();
+                    RotuloStatus newStatus = getNewStatus();
                     if (newStatus != null) {
                         obj.setStatus(newStatus);
-                        if (newStatus == Status.CONCLUIDO) {
+                        if (newStatus == RotuloStatus.CONCLUIDO) {
                             LocalDate dataConclusao = LocalDate.now();
                             obj.setDoneAt(dataConclusao);
                         }
@@ -203,7 +287,7 @@ public class MenuTarefas {
                     LocalDate newDate = getNewConclusionDate();
                     if (newDate != null) {
                         obj.setDoneAt(newDate);
-                        obj.setStatus(Status.CONCLUIDO);
+                        obj.setStatus(RotuloStatus.CONCLUIDO);
                         if (arqTarefas.update(obj, nomeLimpo)) {
                             System.out.println("Data de conclusao atualizada com sucesso!!");
                         } else {
@@ -319,8 +403,8 @@ public class MenuTarefas {
         return 0;
     }
 
-    public Status getNewStatus(){
-        Status sts = null;
+    public RotuloStatus getNewStatus(){
+        RotuloStatus sts = null;
         int option;
 
         do {
@@ -338,15 +422,15 @@ public class MenuTarefas {
             }
             switch (option) {
                 case 1:
-                    sts = Status.PENDENTE;
+                    sts = RotuloStatus.PENDENTE;
                     option = 0;
                     break;
                 case 2:
-                    sts = Status.EM_ANDAMENTO;
+                    sts = RotuloStatus.EM_ANDAMENTO;
                     option = 0;
                     break;
                 case 3:
-                    sts = Status.CONCLUIDO;
+                    sts = RotuloStatus.CONCLUIDO;
                     option = 0;
                     break;
                 case 0:
