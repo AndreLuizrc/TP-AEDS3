@@ -13,24 +13,7 @@ public class Rotulo implements Registro {
     private int categoriaId;
     private int statusId;
 
-    public Rotulo() {
-        this.idRelacionamento = -1;
-        this.categoriaId = -1;
-        this.statusId = -1;
-
-    }
-
-    public Rotulo(int categoriaId, int statusId) {
-        this.idRelacionamento = 0;
-        this.categoriaId = categoriaId;
-        this.statusId = statusId;
-    }
-
-    public Rotulo(int idRelacionamento, int categoriaId, int statusId) {
-        this.idRelacionamento = idRelacionamento;
-        this.categoriaId = categoriaId;
-        this.statusId = statusId;
-    }
+    public static final int TAMANHO = 12;
 
     public int getStatusId() {
         return statusId;
@@ -75,6 +58,10 @@ public class Rotulo implements Registro {
 
     @Override
     public void fromByteArray(byte[] b) throws Exception {
+        if (b.length < TAMANHO) {
+            throw new Exception("Byte array com tamanho inválido. Esperado: " + TAMANHO + ", Recebido: " + b.length);
+        }
+
         ByteArrayInputStream bais = new ByteArrayInputStream(b);
         DataInputStream dis = new DataInputStream(bais);
         this.idRelacionamento = dis.readInt();

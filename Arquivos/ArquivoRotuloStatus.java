@@ -4,6 +4,7 @@ import Objetos.ParIdId;
 import Objetos.Rotulo;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
     ArvoreBMais<ParIdId> arvore;
@@ -32,16 +33,51 @@ public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
         return id;
     }
 
-    public Rotulo read(Rotulo rotulo) throws Exception {
-        var rotuloPelaCategoria = new ParIdId(rotulo.getCategoriaId(), rotulo.getId());
-        if (arvore.read(rotuloPelaCategoria) != null)
-            return rotulo;
+    public ArrayList<Rotulo> buscarPorCategoria(int categoriaId) throws Exception {
+        ArrayList<Rotulo> rotulos = new ArrayList<>();
 
-        var rotuloPeloStatus = new ParIdId(rotulo.getStatusId(), rotulo.getId());
-        while(arvore.read(rotuloPeloStatus) != null)
-            return rotulo;
+        ParIdId chaveBusca = new ParIdId(categoriaId, -1);
+        ArrayList<ParIdId> resultados = arvore.read(chaveBusca);
 
-        var emptyEntity = new Rotulo();
-        return emptyEntity;
+        if (resultados != null) {
+            for (ParIdId resultado : resultados) {
+                try {
+                    Rotulo rotulo = super.read(resultado.getId2());
+                    if (rotulo != null) {
+                        rotulos.add(rotulo);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erro ao ler rótulo com ID " + resultado.getId2() + ": " + e.getMessage());
+                    throw e;
+                }
+            }
+        }
+
+        return rotulos;
     }
+
+
+    public ArrayList<Rotulo> buscarPorStatus(int statusId) throws Exception {
+        ArrayList<Rotulo> rotulos = new ArrayList<>();
+
+        ParIdId chaveBusca = new ParIdId(statusId, -1);
+        ArrayList<ParIdId> resultados = arvore.read(chaveBusca);
+
+        if (resultados != null) {
+            for (ParIdId resultado : resultados) {
+                try {
+                    Rotulo rotulo = super.read(resultado.getId2());
+                    if (rotulo != null) {
+                        rotulos.add(rotulo);
+                    }
+                } catch (Exception e) {
+                    System.err.println("Erro ao ler rótulo com ID " + resultado.getId2() + ": " + e.getMessage());
+                    throw e;
+                }
+            }
+        }
+
+        return rotulos;
+    }
+
 }

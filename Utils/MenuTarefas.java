@@ -112,48 +112,83 @@ public class MenuTarefas {
     }
 
     public void buscaPorRotulo() throws Exception {
-        System.out.println("\nPesquisa de tarefa: ");
-        System.out.println("\nVoce deseja buscar por status ou por categoria? ");
-        Rotulo rot = null;
-        String escolhaDoUsuario = console.nextLine();
-        String escolhaTratada = escolhaNormalizer(escolhaDoUsuario);
+        System.out.println("\nPesquisa de tarefa:");
+        System.out.println("1 - Buscar por categoria");
+        System.out.println("2 - Buscar por status");
+        System.out.print("Escolha uma opção: ");
 
-        if (escolhaTratada.equals("categoria")) {
-            String nomeCategoria = console.nextLine();
-            String nomeLimpo = tratarNome(nomeCategoria);
+        String escolha = console.nextLine().trim();
 
-            Categoria categoria = arqCategoria.read(nomeLimpo);
-            ArrayList<Rotulo> lista = new ArrayList<>();
-            for(int i = 0; i < 3; i++){
-                rot = new Rotulo(categoria.getId(), i);
-                lista.add(rot);
-            }
+        switch(escolha) {
+            case "1":
+                buscaPorCategoria();
+                break;
+            case "2":
+                buscaPorStatus();
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
+    }
 
-            for(var element : lista){
-                System.out.println(element);
-            }
+    private void buscaPorCategoria() throws Exception {
+        System.out.print("\nDigite o nome da categoria: ");
+        String nomeCategoria = console.nextLine();
+        String nomeLimpo = tratarNome(nomeCategoria);
 
+        Categoria categoria = arqCategoria.read(nomeLimpo);
+        if (categoria == null) {
+            System.out.println("Categoria não encontrada!");
+            return;
         }
 
+        ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorCategoria(categoria.getId());
 
-        if (escolhaTratada.equals("status")) {
-//            String status = console.nextLine();
-//            String statusTratado = status.toUpperCase().trim();
-//
-//            if (statusTratado.equals("PENDENTE")) {
-//                rot = new Rotulo();
-//            }
-            ArrayList<Rotulo> lista = new ArrayList<>();
-            rot = new Rotulo(1, 2);
-
-
-        }
-
-        var obj = arquivoRotuloStatus.read(rot);
-        if (obj != null) {
-            System.out.println(obj);
+        // Exibe os resultados
+        if (rotulosEncontrados.isEmpty()) {
+            System.out.println("Nenhuma tarefa encontrada para esta categoria!");
         } else {
-            System.out.println("Tarefa nao encontrada");
+            System.out.println("\nTarefas encontradas para a categoria '" + categoria.getNome() + "':");
+            for (Rotulo r : rotulosEncontrados) {
+                System.out.println(r);
+            }
+        }
+    }
+
+    private void buscaPorStatus() throws Exception {
+        System.out.println("\nEstados disponíveis:");
+        System.out.println("1 - PENDENTE");
+        System.out.println("2 - EM ANDAMENTO");
+        System.out.println("3 - CONCLUIDO");
+        System.out.print("Escolha o status: ");
+
+        String escolha = console.nextLine().trim();
+        int statusId;
+
+        switch(escolha) {
+            case "1":
+                statusId = RotuloStatus.PENDENTE.getValue();
+                break;
+            case "2":
+                statusId = RotuloStatus.EM_ANDAMENTO.getValue();
+                break;
+            case "3":
+                statusId = RotuloStatus.CONCLUIDO.getValue();
+                break;
+            default:
+                System.out.println("Status inválido!");
+                return;
+        }
+
+        ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorStatus(statusId);
+
+        if (rotulosEncontrados.isEmpty()) {
+            System.out.println("Nenhuma tarefa encontrada com este status!");
+        } else {
+            System.out.println("\nTarefas encontradas com o status '" + RotuloStatus.values()[statusId] + "':");
+            for (Rotulo r : rotulosEncontrados) {
+                System.out.println(r);
+            }
         }
     }
 
@@ -181,8 +216,8 @@ public class MenuTarefas {
             novaTarefa.setIdCategoria(categoria);
             arqTarefas.create(novaTarefa);
 
-            Rotulo rotulo = new Rotulo(novaTarefa.getId(), novaTarefa.getStatus().getValue());
-            arquivoRotuloStatus.create(rotulo);
+//            Rotulo rotulo = new Rotulo(novaTarefa.getId(), novaTarefa.getStatus().getValue());
+//            arquivoRotuloStatus.create(rotulo);
 
             System.out.println("Tarefa incluída com sucesso!!\n");
         }else{
