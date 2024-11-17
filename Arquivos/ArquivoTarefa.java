@@ -32,7 +32,7 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
         int id = super.create(c);
         indiceIndiretoParNomeIdTarefas.create(new ParNomeId(c.getNome(), id));
         if(arvore.create(new ParIdId(c.getIdCategoria(), c.getId()))){
-            System.out.println("inserido");
+            System.out.println("Item inserido!");
         }
 
         return id;
@@ -55,11 +55,10 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
 
         ParIdId pii = new ParIdId(tarefa.getIdCategoria(), tarefa.getId());
         arvore.delete(pii);
-        
-        if(pni != null) 
-            if(delete(pni.getId())) 
-                
-                return indiceIndiretoParNomeIdTarefas.delete(ParNomeId.hash(nome));
+
+        if(delete(pni.getId()))
+            return indiceIndiretoParNomeIdTarefas.delete(ParNomeId.hash(nome));
+
         return false;
     }
 

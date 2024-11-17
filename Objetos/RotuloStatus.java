@@ -1,13 +1,13 @@
-package Utils;
+package Objetos;
 
-public enum Status {
+public enum RotuloStatus  {
     PENDENTE((byte) 0),
     EM_ANDAMENTO((byte) 1),
     CONCLUIDO((byte) 2);
 
     private final byte value;
 
-    Status(byte value) {
+    RotuloStatus(byte value) {
         this.value = value;
     }
 
@@ -15,8 +15,8 @@ public enum Status {
         return value;
     }
 
-    public static Status fromByte(byte value) {
-        for (Status status : Status.values()) {
+    public static RotuloStatus fromByte(byte value) {
+        for (RotuloStatus status : RotuloStatus.values()) {
             if (status.getValue() == value) {
                 return status;
             }

@@ -2,6 +2,7 @@ package Arquivos;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.lang.reflect.Constructor;
+import java.util.ArrayList;
 
 import Interfaces.Registro;
 import Objetos.ParEnderecoId;
@@ -77,6 +78,36 @@ public class Arquivo<T extends Registro> {
             }
         }
         return null;
+    }
+
+    public ArrayList<T> readAll() throws Exception {
+        ArrayList<T> lista = new ArrayList<>();
+        T obj;
+        byte lapide;
+        short tam;
+        byte[] b;
+
+        arquivo.seek(TAM_CABECALHO);
+
+        while(arquivo.getFilePointer() < arquivo.length()) {
+            obj = construtor.newInstance();
+            lapide = arquivo.readByte();
+            if(lapide == ' ') {
+                tam = arquivo.readShort();
+
+                b = new byte[tam];
+
+                arquivo.read(b);
+
+                obj.fromByteArray(b);
+                lista.add(obj);
+            } else {
+                tam = arquivo.readShort();
+                arquivo.skipBytes(tam);
+            }
+        }
+
+        return lista;
     }
 
     public boolean delete(int id) throws Exception {

@@ -2,25 +2,29 @@ package Utils;
 
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import Arquivos.ArquivoRotuloStatus;
 import Arquivos.ArquivoTarefa;
-import Objetos.Categoria;
-import Objetos.ParIdId;
-import Objetos.Tarefas;
+import Objetos.*;
+
 import java.time.LocalDate;
 import java.text.Normalizer;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+
 import Arquivos.ArquivoCategoria;
 
 public class MenuTarefas {
 
     ArquivoTarefa arqTarefas;
     ArquivoCategoria arqCategoria;
+    ArquivoRotuloStatus arquivoRotuloStatus;
     private Scanner console = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
     public MenuTarefas() throws Exception {
         arqTarefas = new ArquivoTarefa();
         arqCategoria = new ArquivoCategoria();
+        arquivoRotuloStatus = new ArquivoRotuloStatus();
     }
 
     public void menu() throws Exception {
@@ -46,7 +50,7 @@ public class MenuTarefas {
 
             switch (opcao) {
                 case 1:
-                    buscarTarefa();
+                    workflowBusca();
                     break;
                 case 2:
                     incluirTarefa();
@@ -70,7 +74,30 @@ public class MenuTarefas {
         } while (opcao != 0);
     }
 
-    public void buscarTarefa() throws Exception {
+    public void workflowBusca() throws Exception {
+        System.out.println("\nDeseja buscar tarefa por nome, rotulo ou termo?\n");
+        String escolhaDoUsuario = console.nextLine();
+        String escolhaTratada = escolhaNormalizer(escolhaDoUsuario);
+
+        if (escolhaTratada.equals("nome")) {
+            buscarTarefaPorNome();
+        }
+
+        if (escolhaTratada.equals("termo")) {
+            buscarTarefaPorTermo();
+        }
+
+        if (escolhaTratada.equals("rotulo")) {
+            buscaPorRotulo();
+        }
+
+    }
+
+    public String escolhaNormalizer(String str) {
+        return str.toLowerCase().trim();
+    }
+
+    public void buscarTarefaPorNome() throws Exception {
         System.out.println("\nPesquisa de tarefa: ");
         System.out.println("\nDigite o nome da Tarefa que deseja pesquisar: ");
 
@@ -85,27 +112,118 @@ public class MenuTarefas {
         }
     }
 
+    public void buscaPorRotulo() throws Exception {
+        System.out.println("\nPesquisa de tarefa:");
+        System.out.println("1 - Buscar por categoria");
+        System.out.println("2 - Buscar por status");
+        System.out.print("Escolha uma opção: ");
+
+        String escolha = console.nextLine().trim();
+
+        switch (escolha) {
+            case "1":
+                buscaPorCategoria();
+                break;
+            case "2":
+                buscaPorStatus();
+                break;
+            default:
+                System.out.println("Opção inválida!");
+        }
+    }
+
+    private void buscaPorCategoria() throws Exception {
+        System.out.println("\nCategorias disponíveis:");
+        listarCategoriasDisponiveis();
+
+        System.out.print("Digite o ID da categoria: ");
+        try {
+            int categoriaId = Integer.parseInt(console.nextLine().trim());
+
+            ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorCategoria(categoriaId);
+
+            arquivoRotuloStatus.imprimirTarefasPorCategoria(rotulosEncontrados, categoriaId);
+
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido! Digite um número inteiro.");
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar categoria: " + e.getMessage());
+        }
+    }
+    private void listarCategoriasDisponiveis() throws Exception {
+        ArquivoCategoria arquivoCategoria = new ArquivoCategoria();
+        ArrayList<Categoria> categorias = arquivoCategoria.readAll();
+
+        if (categorias.isEmpty()) {
+            System.out.println("Não há categorias cadastradas.");
+            return;
+        }
+
+        for (Categoria cat : categorias) {
+            System.out.println(cat.getId() + " - " + cat.unfiller(cat.getNome()));
+        }
+    }
+
+    private void buscaPorStatus() throws Exception {
+        System.out.println("\nEstados disponíveis:");
+        System.out.println("1 - PENDENTE");
+        System.out.println("2 - EM ANDAMENTO");
+        System.out.println("3 - CONCLUIDO");
+        System.out.print("Escolha o status: ");
+
+        String escolha = console.nextLine().trim();
+        int statusId;
+
+        switch (escolha) {
+            case "1":
+                statusId = RotuloStatus.PENDENTE.getValue();
+                break;
+            case "2":
+                statusId = RotuloStatus.EM_ANDAMENTO.getValue();
+                break;
+            case "3":
+                statusId = RotuloStatus.CONCLUIDO.getValue();
+                break;
+            default:
+                System.out.println("Status inválido!");
+                return;
+        }
+
+        ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorStatus(statusId);
+        arquivoRotuloStatus.imprimirTarefasPorStatus(rotulosEncontrados);
+    }
+
+    public void buscarTarefaPorTermo() throws Exception {
+        System.out.println("Busca por termo");
+    }
+
     public void incluirTarefa() throws Exception {
         String nome;
+        String descricao;
         int categoria;
 
         System.out.println("\nInclusão de tarefa: ");
         System.out.println("\nDigite o nome da Tarefa que deseja incluir: ");
         nome = filler(console.nextLine());
 
+        System.out.println("\nDigite uma descricao para sua tarefa: ");
+        descricao = console.nextLine();
+
         System.out.println("\nEscolha a categoria a qual esta tarefa pertence: ");
         categoria = getCategoria();
 
-        if(categoria != 0){
-            Tarefas novaTarefa = new Tarefas(nome);
+        if (categoria != 0) {
+            Tarefas novaTarefa = new Tarefas(nome, descricao);
+
             novaTarefa.setIdCategoria(categoria);
-            arqTarefas.create(novaTarefa);
-            System.out.println("Tarefa incluída com sucesso!!\n");
-        }else{
+            System.out.println(novaTarefa);
+            int tarefaId = arqTarefas.create(novaTarefa);
+            int relId = arquivoRotuloStatus.criarRelacionamentoParaTarefa(tarefaId, categoria, novaTarefa.getStatus().getValue());
+
+            System.out.println("Tarefa criada com sucesso. ID: " + tarefaId + ", RelID: " + relId + ", StatusId: " + categoria);
+        } else {
             System.out.println("ERRO");
         }
-        
-        
     }
 
     public void excluirTarefa() throws Exception {
@@ -168,10 +286,10 @@ public class MenuTarefas {
                     break;
                 case 2:
                     // alterarStatusTarefa();
-                    Status newStatus = getNewStatus();
+                    RotuloStatus newStatus = getNewStatus();
                     if (newStatus != null) {
                         obj.setStatus(newStatus);
-                        if (newStatus == Status.CONCLUIDO) {
+                        if (newStatus == RotuloStatus.CONCLUIDO) {
                             LocalDate dataConclusao = LocalDate.now();
                             obj.setDoneAt(dataConclusao);
                         }
@@ -203,24 +321,24 @@ public class MenuTarefas {
                     LocalDate newDate = getNewConclusionDate();
                     if (newDate != null) {
                         obj.setDoneAt(newDate);
-                        obj.setStatus(Status.CONCLUIDO);
+                        obj.setStatus(RotuloStatus.CONCLUIDO);
                         if (arqTarefas.update(obj, nomeLimpo)) {
                             System.out.println("Data de conclusao atualizada com sucesso!!");
                         } else {
                             System.out.println("ERRO");
                         }
-                    }else{
+                    } else {
                         System.out.println("ERRO");
                     }
                     break;
                 case 5:
                     System.out.println("Escolha a nova categoria");
                     int novaCategoria = getCategoria();
-                    if(novaCategoria != 0){
+                    if (novaCategoria != 0) {
                         int idVelho = obj.getId();
                         obj.setIdCategoria(novaCategoria);
                         arqTarefas.update(obj, nomeLimpo, idVelho);
-                    }else{
+                    } else {
                         System.out.println("ERRO");
                     }
                     break;
@@ -233,21 +351,21 @@ public class MenuTarefas {
         }
     }
 
-    public void listarTarefasDeCategoria()throws Exception{
+    public void listarTarefasDeCategoria() throws Exception {
         System.out.println("Escolha uma categoria: ");
         int idCategoria = getCategoria();
 
-        if(idCategoria != 0){
+        if (idCategoria != 0) {
             ArrayList<ParIdId> pii = arqTarefas.getAllStacksFromCategorie(idCategoria);
-            if(pii.size() > 0){
-                for(ParIdId item : pii){
-                    Tarefas tarefa = arqTarefas.read(item.getId2());                    
+            if (!pii.isEmpty()) {
+                for (ParIdId item : pii) {
+                    Tarefas tarefa = arqTarefas.read(item.getId2());
                     System.out.println(tarefa);
                 }
-            }else{
+            } else {
                 System.out.println("Nao existem tarefas com essa categoria!");
             }
-        }else{
+        } else {
             System.out.println("Categoria invalida!");
         }
     }
@@ -278,49 +396,52 @@ public class MenuTarefas {
         return nome;
     }
 
-    public String unfiller(String nome){
+    public String unfiller(String nome) {
+        if (nome == null) {
+            return "";
+        }
+
         char[] tmp = new char[20];
         int j = 0;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20 && i < nome.length(); i++) {
             if (nome.charAt(i) != '|') {
                 tmp[j] = nome.charAt(i);
                 j++;
             }
         }
-        String fixed = new String(tmp);
-        return fixed;
+        return new String(tmp, 0, j);
     }
 
-    public int getCategoria()throws Exception{
+    public int getCategoria() throws Exception {
         ArrayList<Categoria> categorias = arqCategoria.getAllCategories();
         int option;
         int position = 0;
 
-        if(categorias != null){
-            do{
+        if (categorias != null) {
+            do {
                 int i = 1;
-                for(Categoria item : categorias){
+                for (Categoria item : categorias) {
                     System.out.println(i + "- " + unfiller(item.getNome()));
                     i++;
                 }
                 System.out.println("opcao:");
                 option = console.nextInt();
                 console.nextLine();
-                if(option <= categorias.size() && option > 0){
+                if (option <= categorias.size() && option > 0) {
                     position = option - 1;
                     option = 0;
-                }                
-                
-            }while(option != 0);
-           
+                }
+
+            } while (option != 0);
+
             return categorias.get(position).getId();
         }
 
         return 0;
     }
 
-    public Status getNewStatus(){
-        Status sts = null;
+    public RotuloStatus getNewStatus() {
+        RotuloStatus sts = null;
         int option;
 
         do {
@@ -332,21 +453,21 @@ public class MenuTarefas {
 
             System.out.print("Opção: ");
             try {
-                option = Integer.valueOf(console.nextLine());
+                option = Integer.parseInt(console.nextLine());
             } catch (NumberFormatException e) {
                 option = -1;
             }
             switch (option) {
                 case 1:
-                    sts = Status.PENDENTE;
+                    sts = RotuloStatus.PENDENTE;
                     option = 0;
                     break;
                 case 2:
-                    sts = Status.EM_ANDAMENTO;
+                    sts = RotuloStatus.EM_ANDAMENTO;
                     option = 0;
                     break;
                 case 3:
-                    sts = Status.CONCLUIDO;
+                    sts = RotuloStatus.CONCLUIDO;
                     option = 0;
                     break;
                 case 0:
@@ -372,7 +493,7 @@ public class MenuTarefas {
 
         System.out.print("Opção: ");
         try {
-            option = Integer.valueOf(console.nextLine());
+            option = Integer.parseInt(console.nextLine());
         } catch (NumberFormatException e) {
             option = -1;
         }
@@ -416,8 +537,6 @@ public class MenuTarefas {
 
         console.nextLine();
 
-        LocalDate novaData = LocalDate.of(ano, mes, dia);
-
-        return novaData;
+        return LocalDate.of(ano, mes, dia);
     }
 }
