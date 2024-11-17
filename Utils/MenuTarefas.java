@@ -133,26 +133,34 @@ public class MenuTarefas {
     }
 
     private void buscaPorCategoria() throws Exception {
-        System.out.print("\nDigite o nome da categoria: ");
-        String nomeCategoria = console.nextLine();
-        String nomeLimpo = tratarNome(nomeCategoria);
+        System.out.println("\nCategorias disponíveis:");
+        listarCategoriasDisponiveis();
 
-        Categoria categoria = arqCategoria.read(nomeLimpo);
-        if (categoria == null) {
-            System.out.println("Categoria não encontrada!");
+        System.out.print("Digite o ID da categoria: ");
+        try {
+            int categoriaId = Integer.parseInt(console.nextLine().trim());
+
+            ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorCategoria(categoriaId);
+
+            arquivoRotuloStatus.imprimirTarefasPorCategoria(rotulosEncontrados, categoriaId);
+
+        } catch (NumberFormatException e) {
+            System.out.println("ID inválido! Digite um número inteiro.");
+        } catch (Exception e) {
+            System.out.println("Erro ao buscar categoria: " + e.getMessage());
+        }
+    }
+    private void listarCategoriasDisponiveis() throws Exception {
+        ArquivoCategoria arquivoCategoria = new ArquivoCategoria();
+        ArrayList<Categoria> categorias = arquivoCategoria.readAll();
+
+        if (categorias.isEmpty()) {
+            System.out.println("Não há categorias cadastradas.");
             return;
         }
 
-        ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorCategoria(categoria.getId());
-
-        // Exibe os resultados
-        if (rotulosEncontrados.isEmpty()) {
-            System.out.println("Nenhuma tarefa encontrada para esta categoria!");
-        } else {
-            System.out.println("\nTarefas encontradas para a categoria '" + categoria.getNome() + "':");
-            for (Rotulo r : rotulosEncontrados) {
-                System.out.println(r);
-            }
+        for (Categoria cat : categorias) {
+            System.out.println(cat.getId() + " - " + cat.unfiller(cat.getNome()));
         }
     }
 
@@ -182,15 +190,7 @@ public class MenuTarefas {
         }
 
         ArrayList<Rotulo> rotulosEncontrados = arquivoRotuloStatus.buscarPorStatus(statusId);
-
-        if (rotulosEncontrados.isEmpty()) {
-            System.out.println("Nenhuma tarefa encontrada com este status!");
-        } else {
-            System.out.println("\nTarefas encontradas com o status '" + RotuloStatus.values()[statusId] + "':");
-            for (Rotulo r : rotulosEncontrados) {
-                System.out.println(r);
-            }
-        }
+        arquivoRotuloStatus.imprimirTarefasPorStatus(rotulosEncontrados);
     }
 
     public void buscarTarefaPorTermo() throws Exception {
@@ -357,7 +357,7 @@ public class MenuTarefas {
 
         if (idCategoria != 0) {
             ArrayList<ParIdId> pii = arqTarefas.getAllStacksFromCategorie(idCategoria);
-            if (pii.size() > 0) {
+            if (!pii.isEmpty()) {
                 for (ParIdId item : pii) {
                     Tarefas tarefa = arqTarefas.read(item.getId2());
                     System.out.println(tarefa);
@@ -453,7 +453,7 @@ public class MenuTarefas {
 
             System.out.print("Opção: ");
             try {
-                option = Integer.valueOf(console.nextLine());
+                option = Integer.parseInt(console.nextLine());
             } catch (NumberFormatException e) {
                 option = -1;
             }
@@ -493,7 +493,7 @@ public class MenuTarefas {
 
         System.out.print("Opção: ");
         try {
-            option = Integer.valueOf(console.nextLine());
+            option = Integer.parseInt(console.nextLine());
         } catch (NumberFormatException e) {
             option = -1;
         }
@@ -537,8 +537,6 @@ public class MenuTarefas {
 
         console.nextLine();
 
-        LocalDate novaData = LocalDate.of(ano, mes, dia);
-
-        return novaData;
+        return LocalDate.of(ano, mes, dia);
     }
 }

@@ -37,19 +37,25 @@ public class Categoria implements Registro {
     }
 
     public String toString() {
+
+        return "\nID..: " + this.id +
+               "\nNome: " + unfiller(this.getNome());
+    }
+
+    public String unfiller(String nome) {
+        if (nome == null) {
+            return "";
+        }
+
         char[] tmp = new char[20];
         int j = 0;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20 && i < nome.length(); i++) {
             if (nome.charAt(i) != '|') {
                 tmp[j] = nome.charAt(i);
                 j++;
             }
         }
-        // FAZER TRATAMENTO DE ACENTOS
-        String fixed = new String(tmp);
-        
-        return "\nID..: " + this.id +
-               "\nNome: " + fixed;
+        return new String(tmp, 0, j);
     }
 
     public byte[] toByteArray() throws IOException {

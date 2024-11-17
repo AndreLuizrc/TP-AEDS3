@@ -55,11 +55,10 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
 
         ParIdId pii = new ParIdId(tarefa.getIdCategoria(), tarefa.getId());
         arvore.delete(pii);
-        
-        if(pni != null) 
-            if(delete(pni.getId())) 
-                
-                return indiceIndiretoParNomeIdTarefas.delete(ParNomeId.hash(nome));
+
+        if(delete(pni.getId()))
+            return indiceIndiretoParNomeIdTarefas.delete(ParNomeId.hash(nome));
+
         return false;
     }
 

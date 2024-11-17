@@ -77,7 +77,8 @@ public class Rotulo implements Registro {
     public String toString() {
         return  "\nID relacionamento.: " + this.idRelacionamento +
                 "\nID categoria.........: " + this.categoriaId +
-                "\nID status.........: " + this.getStatusName();
+                "\nId status.........: " + this.getStatusId() +
+                "\n";
     }
 
     public String getStatusName() {
