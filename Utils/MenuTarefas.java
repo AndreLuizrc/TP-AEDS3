@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.text.Normalizer;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+
 import Arquivos.ArquivoCategoria;
 
 public class MenuTarefas {
@@ -86,7 +87,7 @@ public class MenuTarefas {
             buscarTarefaPorTermo();
         }
 
-        if(escolhaTratada.equals("rotulo")) {
+        if (escolhaTratada.equals("rotulo")) {
             buscaPorRotulo();
         }
 
@@ -119,7 +120,7 @@ public class MenuTarefas {
 
         String escolha = console.nextLine().trim();
 
-        switch(escolha) {
+        switch (escolha) {
             case "1":
                 buscaPorCategoria();
                 break;
@@ -165,7 +166,7 @@ public class MenuTarefas {
         String escolha = console.nextLine().trim();
         int statusId;
 
-        switch(escolha) {
+        switch (escolha) {
             case "1":
                 statusId = RotuloStatus.PENDENTE.getValue();
                 break;
@@ -211,20 +212,18 @@ public class MenuTarefas {
         System.out.println("\nEscolha a categoria a qual esta tarefa pertence: ");
         categoria = getCategoria();
 
-        if(categoria != 0){
+        if (categoria != 0) {
             Tarefas novaTarefa = new Tarefas(nome, descricao);
+
             novaTarefa.setIdCategoria(categoria);
-            arqTarefas.create(novaTarefa);
+            System.out.println(novaTarefa);
+            int tarefaId = arqTarefas.create(novaTarefa);
+            int relId = arquivoRotuloStatus.criarRelacionamentoParaTarefa(tarefaId, categoria, novaTarefa.getStatus().getValue());
 
-//            Rotulo rotulo = new Rotulo(novaTarefa.getId(), novaTarefa.getStatus().getValue());
-//            arquivoRotuloStatus.create(rotulo);
-
-            System.out.println("Tarefa incluída com sucesso!!\n");
-        }else{
+            System.out.println("Tarefa criada com sucesso. ID: " + tarefaId + ", RelID: " + relId + ", StatusId: " + categoria);
+        } else {
             System.out.println("ERRO");
         }
-        
-        
     }
 
     public void excluirTarefa() throws Exception {
@@ -328,18 +327,18 @@ public class MenuTarefas {
                         } else {
                             System.out.println("ERRO");
                         }
-                    }else{
+                    } else {
                         System.out.println("ERRO");
                     }
                     break;
                 case 5:
                     System.out.println("Escolha a nova categoria");
                     int novaCategoria = getCategoria();
-                    if(novaCategoria != 0){
+                    if (novaCategoria != 0) {
                         int idVelho = obj.getId();
                         obj.setIdCategoria(novaCategoria);
                         arqTarefas.update(obj, nomeLimpo, idVelho);
-                    }else{
+                    } else {
                         System.out.println("ERRO");
                     }
                     break;
@@ -352,21 +351,21 @@ public class MenuTarefas {
         }
     }
 
-    public void listarTarefasDeCategoria()throws Exception{
+    public void listarTarefasDeCategoria() throws Exception {
         System.out.println("Escolha uma categoria: ");
         int idCategoria = getCategoria();
 
-        if(idCategoria != 0){
+        if (idCategoria != 0) {
             ArrayList<ParIdId> pii = arqTarefas.getAllStacksFromCategorie(idCategoria);
-            if(pii.size() > 0){
-                for(ParIdId item : pii){
-                    Tarefas tarefa = arqTarefas.read(item.getId2());                    
+            if (pii.size() > 0) {
+                for (ParIdId item : pii) {
+                    Tarefas tarefa = arqTarefas.read(item.getId2());
                     System.out.println(tarefa);
                 }
-            }else{
+            } else {
                 System.out.println("Nao existem tarefas com essa categoria!");
             }
-        }else{
+        } else {
             System.out.println("Categoria invalida!");
         }
     }
@@ -397,48 +396,51 @@ public class MenuTarefas {
         return nome;
     }
 
-    public String unfiller(String nome){
+    public String unfiller(String nome) {
+        if (nome == null) {
+            return "";
+        }
+
         char[] tmp = new char[20];
         int j = 0;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20 && i < nome.length(); i++) {
             if (nome.charAt(i) != '|') {
                 tmp[j] = nome.charAt(i);
                 j++;
             }
         }
-        String fixed = new String(tmp);
-        return fixed;
+        return new String(tmp, 0, j);
     }
 
-    public int getCategoria()throws Exception{
+    public int getCategoria() throws Exception {
         ArrayList<Categoria> categorias = arqCategoria.getAllCategories();
         int option;
         int position = 0;
 
-        if(categorias != null){
-            do{
+        if (categorias != null) {
+            do {
                 int i = 1;
-                for(Categoria item : categorias){
+                for (Categoria item : categorias) {
                     System.out.println(i + "- " + unfiller(item.getNome()));
                     i++;
                 }
                 System.out.println("opcao:");
                 option = console.nextInt();
                 console.nextLine();
-                if(option <= categorias.size() && option > 0){
+                if (option <= categorias.size() && option > 0) {
                     position = option - 1;
                     option = 0;
-                }                
-                
-            }while(option != 0);
-           
+                }
+
+            } while (option != 0);
+
             return categorias.get(position).getId();
         }
 
         return 0;
     }
 
-    public RotuloStatus getNewStatus(){
+    public RotuloStatus getNewStatus() {
         RotuloStatus sts = null;
         int option;
 

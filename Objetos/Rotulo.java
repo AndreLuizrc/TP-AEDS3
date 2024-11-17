@@ -15,21 +15,25 @@ public class Rotulo implements Registro {
 
     public static final int TAMANHO = 12;
 
-    public int getStatusId() {
-        return statusId;
+    public Rotulo() {
+        this.idRelacionamento = -1;
+        this.categoriaId = -1;
+        this.statusId = -1;
     }
 
-    public String getStatusName(){
-        if (statusId == 0)
-            return "PENDENTE";
+    public Rotulo(int categoriaId, int statusId) {
+        this.idRelacionamento = -1; // será definido pelo arquivo no create
+        this.categoriaId = categoriaId;
+        this.statusId = statusId;
+    }
 
-        if (statusId == 1)
-            return "EM ANDAMENTO";
-
-        if (statusId == 2)
-            return "CONCLUIDO";
-
-        return "Status nao definido";
+    public Rotulo(int idRelacionamento, int categoriaId, int statusId) {
+        this.idRelacionamento = idRelacionamento;
+        this.categoriaId = categoriaId;
+        this.statusId = statusId;
+    }
+    public int getStatusId() {
+        return statusId;
     }
 
     public int getCategoriaId() {
@@ -73,6 +77,15 @@ public class Rotulo implements Registro {
     public String toString() {
         return  "\nID relacionamento.: " + this.idRelacionamento +
                 "\nID categoria.........: " + this.categoriaId +
-                "\nID status.........: " + getStatusName();
+                "\nID status.........: " + this.getStatusName();
+    }
+
+    public String getStatusName() {
+        return switch (statusId) {
+            case 0 -> "PENDENTE";
+            case 1 -> "EM ANDAMENTO";
+            case 2 -> "CONCLUIDO";
+            default -> "Status não definido";
+        };
     }
 }

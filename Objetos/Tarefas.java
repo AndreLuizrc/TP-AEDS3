@@ -125,6 +125,7 @@ public class Tarefas implements Registro {
         this.descricao = descricao;
     }
 
+
     @Override
     public byte[] toByteArray() throws Exception {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -178,7 +179,7 @@ public class Tarefas implements Registro {
                     (this.status == RotuloStatus.CONCLUIDO ? "\nDone at...: " + this.doneAt.toString() : "") +
                     "\nPriority..: " + getPriorityType(this.priority) +
                     "\nCategoria.: " + getNomeCategoria(this.idCategoria) +
-                    "\nDescricao.: " + getDescricao();
+                    "\nDescricao.: " + this.getDescricao();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -208,15 +209,18 @@ public class Tarefas implements Registro {
     }
 
     public String unfiller(String nome) {
+        if (nome == null) {
+            return "";
+        }
+
         char[] tmp = new char[20];
         int j = 0;
-        for (int i = 0; i < 20; i++) {
+        for (int i = 0; i < 20 && i < nome.length(); i++) {
             if (nome.charAt(i) != '|') {
                 tmp[j] = nome.charAt(i);
                 j++;
             }
         }
-        String fixed = new String(tmp);
-        return fixed;
+        return new String(tmp, 0, j); // Evita caracteres extras no final
     }
 }

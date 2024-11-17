@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
     ArvoreBMais<ParIdId> arvore;
+    private int proximoId;
 
     public ArquivoRotuloStatus() throws Exception {
         super("rotulo", Rotulo.class.getConstructor());
@@ -16,22 +17,33 @@ public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
                 ParIdId.class.getConstructor(), 5,
                 "dados/arvore.db"
         );
-
+        this.proximoId = 1;
     }
 
-    @Override
-    public int create(Rotulo rotulo) throws Exception {
-        int id = super.create(rotulo);
+    public int criarRelacionamento(int categoriaId, int statusId) throws Exception {
+        // Cria novo objeto Rotulo
+        Rotulo novoRotulo = new Rotulo(categoriaId, statusId);
 
-        try {
-            arvore.create(new ParIdId(rotulo.getCategoriaId(), id));
-            arvore.create(new ParIdId(rotulo.getStatusId(), id));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Cria o registro no arquivo e obtém o ID
+        int id = super.create(novoRotulo);
+
+        // Cria as entradas na árvore B+
+        arvore.create(new ParIdId(categoriaId, id));
+        arvore.create(new ParIdId(statusId, id));
 
         return id;
     }
+
+    public int criarRelacionamentoParaTarefa(int tarefaId, int categoriaId, int statusId) throws Exception {
+        // Cria o relacionamento
+        int relId = criarRelacionamento(categoriaId, statusId);
+
+        // Aqui você pode adicionar lógica adicional para vincular à tarefa
+        // Por exemplo, criar uma entrada em outra árvore que relacione tarefa->relacionamento
+
+        return relId;
+    }
+
 
     public ArrayList<Rotulo> buscarPorCategoria(int categoriaId) throws Exception {
         ArrayList<Rotulo> rotulos = new ArrayList<>();
@@ -65,6 +77,7 @@ public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
 
         if (resultados != null) {
             for (ParIdId resultado : resultados) {
+                System.out.println(resultado);
                 try {
                     Rotulo rotulo = super.read(resultado.getId2());
                     if (rotulo != null) {
