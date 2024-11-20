@@ -7,7 +7,7 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
-
+import Objetos.ElementoLista;
 
 public class ListaInvertida {
     String nomeArquivoDicionario;

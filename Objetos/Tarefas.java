@@ -132,6 +132,7 @@ public class Tarefas implements Registro {
         DataOutputStream dos = new DataOutputStream(baos);
         dos.writeInt(this.id);
         dos.writeUTF(this.nome);
+        dos.writeUTF(descricao);
         dos.writeInt((int) this.createdAt.toEpochDay());
 
         if (this.doneAt != null) {
@@ -155,6 +156,7 @@ public class Tarefas implements Registro {
 
         this.id = dis.readInt();
         this.nome = dis.readUTF();
+        this.descricao = dis.readUTF();
         this.createdAt = LocalDate.ofEpochDay(dis.readInt());
 
         boolean hasDoneAt = dis.readBoolean();
