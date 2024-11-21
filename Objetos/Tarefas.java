@@ -4,6 +4,7 @@ package Objetos;
 import Interfaces.Registro;
 
 import java.io.*;
+import java.text.Normalizer;
 import java.time.LocalDate;
 
 import Arquivos.ArquivoCategoria;
@@ -123,6 +124,16 @@ public class Tarefas implements Registro {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    //Função para realizar tratamentos na descrição da tarefa e retornar um vetor com as strings tratadas e separadas
+    public String[] splitDescricao() {
+        String stringFormatada = Normalizer.normalize(this.descricao, Normalizer.Form.NFD);
+        stringFormatada.replaceAll("[^\\p{ASCII}]", "");
+        stringFormatada = stringFormatada.toLowerCase();
+        String[] listaChaves = stringFormatada.split(" ");
+
+        return listaChaves;
     }
 
 
