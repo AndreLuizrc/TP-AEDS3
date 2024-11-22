@@ -13,6 +13,7 @@ import Objetos.ElementoLista;
 import Objetos.ParIdId;
 import Objetos.ParNomeId;
 import Objetos.Tarefas;
+import Utils.AuxFunctions;
 
 public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
 
@@ -20,7 +21,7 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
     HashExtensivel<ParNomeId> indiceIndiretoParNomeIdTarefas;
     ArvoreBMais<ParIdId> arvore;
     ListaInvertida listaInvertida;
-    Set<String> stopWords;
+    AuxFunctions auxFunctions;
 
     public ArquivoTarefa() throws Exception {
         super("tarefas", Tarefas.class.getConstructor());
@@ -38,7 +39,7 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
 
         listaInvertida = new ListaInvertida(4, "dados/dicionario.listainv.db", "dados/blocos.listainv.db");
 
-        stopWords = new HashSet<>(Files.readAllLines(Paths.get("dados/stopwords.txt")));
+        auxFunctions = new AuxFunctions();
     }
 
     @Override
@@ -49,7 +50,8 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
             System.out.println("Item inserido!");
         }
         //chamar aqui a função de insertLista passando como paramentro o id da tarefa e o c.splitDescrição
-        insertList(c.splitDescricao(), id);
+        insertList(c.getDescricao(), id);
+        listaInvertida.print();
 
         return id;
     }
@@ -117,21 +119,13 @@ public class ArquivoTarefa extends Arquivos.Arquivo<Tarefas> {
     }
 
     //Função ainda n finalizada
-    private void insertList (String[] listaPalavras, int id) throws Exception{
-        int qtdPalavras = listaPalavras.length;
-        List<String> listChaves = new ArrayList<>();
-
-        //Retirando as StopWords da lista de termos da descrição
-        for(int i = 0; i < qtdPalavras; i++){
-            if(!stopWords.contains(listaPalavras[i])){
-                listChaves.add(listaPalavras[i]);
-            }
-        }
+    private void insertList (String texto, int id) throws Exception{
+        List<String> listChaves = auxFunctions.splitTextToList(texto);
 
         //fazer calculo do TF e depois chamar o create da lista invertida passando o chave, a frequencia e o id da tarefa
         for(int i = 0; i < listChaves.size(); i++){
             int frequencia = Collections.frequency(listChaves,listChaves.get(i));
-            int TF = frequencia/listChaves.size();
+            float TF = (float)frequencia/listChaves.size();
             listaInvertida.create(listChaves.get(i), new ElementoLista(id, TF));
         }
     }
