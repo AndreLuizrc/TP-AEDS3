@@ -1,6 +1,7 @@
 package Utils;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import Arquivos.ArquivoRotuloStatus;
@@ -19,12 +20,14 @@ public class MenuTarefas {
     ArquivoTarefa arqTarefas;
     ArquivoCategoria arqCategoria;
     ArquivoRotuloStatus arquivoRotuloStatus;
+    AuxFunctions auxFunctions;
     private Scanner console = new Scanner(new InputStreamReader(System.in, StandardCharsets.UTF_8));
 
     public MenuTarefas() throws Exception {
         arqTarefas = new ArquivoTarefa();
         arqCategoria = new ArquivoCategoria();
         arquivoRotuloStatus = new ArquivoRotuloStatus();
+        auxFunctions = new AuxFunctions();
     }
 
     public void menu() throws Exception {
@@ -150,6 +153,7 @@ public class MenuTarefas {
             System.out.println("Erro ao buscar categoria: " + e.getMessage());
         }
     }
+    
     private void listarCategoriasDisponiveis() throws Exception {
         ArquivoCategoria arquivoCategoria = new ArquivoCategoria();
         ArrayList<Categoria> categorias = arquivoCategoria.readAll();
@@ -194,7 +198,14 @@ public class MenuTarefas {
     }
 
     public void buscarTarefaPorTermo() throws Exception {
-        System.out.println("Busca por termo");
+        String termo;
+
+        System.out.println("\nPesquisa de tarefa: ");
+        System.out.println("\nDigite o termo que deseja buscar: ");
+        termo = console.nextLine();
+
+        arqTarefas.buscarTarefaPorTermo(termo);
+
     }
 
     public void incluirTarefa() throws Exception {
@@ -259,6 +270,7 @@ public class MenuTarefas {
             System.out.println("3 - Prioridade");
             System.out.println("4 - Data de conclusao");
             System.out.println("5 - Categoria");
+            System.out.println("6 - Descricao");
             System.out.println("0 - Voltar");
 
             int option;
@@ -338,6 +350,20 @@ public class MenuTarefas {
                         int idVelho = obj.getId();
                         obj.setIdCategoria(novaCategoria);
                         arqTarefas.update(obj, nomeLimpo, idVelho);
+                    } else {
+                        System.out.println("ERRO");
+                    }
+                    break;
+                case 6:
+                    System.out.println("Digite a nova descricao:");
+                    String novaDescricao = console.nextLine();
+                    if(novaDescricao != null){
+                        obj.setDescricao(novaDescricao);
+                        if (arqTarefas.update(obj, nomeLimpo)) {
+                            System.out.println("Descricao atualizada com sucesso!!");
+                        } else {
+                            System.out.println("ERRO");
+                        }
                     } else {
                         System.out.println("ERRO");
                     }
