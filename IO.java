@@ -49,7 +49,5 @@ public class IO {
     }
 }
 
-// TODO deletar indice indireto quando excluir uma tarefa
-
 // cls && javac IO.java && java IO
 // git clean -f
