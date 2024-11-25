@@ -94,6 +94,9 @@ A classe `Tarefas` implementa a interface `Registro` e representa uma tarefa com
 - `void setDoneAt(LocalDate doneAt)`: Define a data de conclusão (doneAt) da tarefa. Usado apenas quando a tarefa é marcada como CONCLUIDO.
 - `void setIdCategoria(int idCategoria)`: Define o id da categoria a qual a tarefa pertence.
 - `String getNomeCategoria(int id)`: Realiza uma busca no arquivo de categorias com base no id e retorna o nome da categoria em questão.
+- `void setDescricao(String descricao):` Define a descrição detalhada da tarefa.
+- `String getDescricao():` Retorna a descrição detalhada da tarefa.
+- `String[] splitDescricao():` Realiza o tratamento e a separação das palavras da descrição em um vetor de strings, removendo acentos, caracteres especiais e transformando tudo em letras minúsculas.
 
 ### Serialização e Deserialização
 
