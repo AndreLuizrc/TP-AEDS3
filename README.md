@@ -12,7 +12,7 @@
 
 # :pushpin:Sobre o Trabalho
 
-O objetivo deste trabalho é implementar um sistema de gerenciamento de tarefas que utilize uma tabela hash extensível para o índice direto e uma árvore B+ para indexação do relacionamento 1:N entre tarefas e categorias. A classe de categorias também contará com índice direto e indireto, sendo este último baseado em seu nome. O sistema permitirá operações de inserção, busca, atualização e exclusão de registros para todas as entidades, garantindo armazenamento e recuperação eficientes na memória secundária por meio de um arquivo binário. O tratamento adequado de remoções lógicas e alterações de tamanho dos registros também será implementado para assegurar a integridade dos dados.
+O objetivo deste trabalho é implementar um sistema de gerenciamento de tarefas que utilize uma tabela hash extensível para o índice direto e uma árvore B+ para indexação do relacionamento 1:N entre tarefas e categorias. Também envolve implementar um índice invertido para busca de tarefas, usando as palavras da descrição e ordenando os resultados por relevância (TFxIDF). Criar uma entidade de rótulos, armazená-los em uma árvore B+ e implementar CRUD. Além disso, é necessário estabelecer um relacionamento N:N entre tarefas e rótulos, permitindo vinculação e exclusão dinâmica, bem como buscas eficientes por termos, categorias e rótulos.
 
 ---
 
@@ -27,6 +27,7 @@ O objetivo deste trabalho é implementar um sistema de gerenciamento de tarefas 
 - **Status (TIPO 'STATUS')**: Indicador textual do estado atual da instância (por exemplo, "pendente", "progresso", "concluído").
 - **Prioridade (BYTE)**: Nível de prioridade da instância, representado como um valor numérico.
 - **id Categoria (INT)**: Chave estrangeira que referencia o id da categoria à qual a tarefa pertence.
+- **Descrição (STRING)**: Texto explicativo ou detalhamento adicional associado à tarefa.
 
 ## Estrutura do Registro de Tarefa
 
@@ -39,6 +40,7 @@ Cada objeto será representado como um vetor de bytes, preparado para ser armaze
 - **Status** = (STRING UTF-8)
 - **Prioridade** = (BYTE)
 - **id Categoria** = (INT)
+- **Descricao** = (STRING UTF-8)
 
 ## Estrutura do Arquivo
 
@@ -149,5 +151,5 @@ Todos os requisitos foram implementados com sucesso. Como já havíamos trabalha
 
 - **André Luiz Rocha Cabral**
 - **Douglas Nicolas Silva Gomes**
-- **joão Paulo Dias Estevão**
+- **João Paulo Dias Estevão**
 - **Victor Sousa Lima**
