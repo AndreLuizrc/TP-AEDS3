@@ -229,7 +229,7 @@ public class MenuTarefas {
             novaTarefa.setIdCategoria(categoria);
             System.out.println(novaTarefa);
             int tarefaId = arqTarefas.create(novaTarefa);
-            int relId = arquivoRotuloStatus.criarRelacionamentoParaTarefa(tarefaId, categoria, novaTarefa.getStatus().getValue());
+            int relId = arquivoRotuloStatus.criarRelacionamentoParaTarefa(categoria, novaTarefa.getStatus().getValue());
 
             System.out.println("Tarefa criada com sucesso. ID: " + tarefaId + ", RelID: " + relId + ", StatusId: " + categoria);
         } else {

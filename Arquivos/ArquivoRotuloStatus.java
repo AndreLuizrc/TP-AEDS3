@@ -35,15 +35,7 @@ public class ArquivoRotuloStatus extends Arquivo<Rotulo> {
         return id;
     }
 
-    public int criarRelacionamentoParaTarefa(int tarefaId, int categoriaId, int statusId) throws Exception {
-        // Cria o relacionamento
-        int relId = criarRelacionamento(categoriaId, statusId);
-
-        // Aqui você pode adicionar lógica adicional para vincular à tarefa
-        // Por exemplo, criar uma entrada em outra árvore que relacione tarefa->relacionamento
-
-        return relId;
-    }
+    public int criarRelacionamentoParaTarefa(int categoriaId, int statusId) throws Exception { return criarRelacionamento(categoriaId, statusId); }
 
 
     public ArrayList<Rotulo> buscarPorCategoria(int categoriaId) throws Exception {
