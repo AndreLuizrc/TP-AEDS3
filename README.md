@@ -172,7 +172,7 @@ Dividimos as tarefas deste trabalho de forma democrática entre os quatro integr
 :white_check_mark:Desenvolvimento do programa, Organização e Implementação dos indices e classes - André, João
 :white_check_mark:Arquitetura do projeto, Testes e Documentação - Victor, Douglas
 
-A parte mais desafiadora do projeto foi gerenciar a sincronização entre a leitura e gravação de dados nos sistemas de arquivos, que deve respeitar as entidades e manter seus respectivos relacionamentos. Durante essa etapa não tivemos problemas de implementação graves, apenas pequenos erros de coerência entre as classes e seus métodos e como a maior parte do código foi discutida em sala de aula, facilitou a compreensão das funções.
+A parte mais desafiadora do projeto foi garantir a sincronização entre a leitura e gravação de dados no sistema de arquivos, assegurando a integridade das entidades e a manutenção de seus relacionamentos. Como a maior parte do código foi discutida em sala de aula, não tivemos problemas graves de implementação durante essa etapa, apenas pequenos erros de coerência entre as classes e seus métodos, que estão corrigidos.
 Todos os requisitos foram implementados com sucesso. Como já havíamos trabalhado juntos anteriormente, a colaboração foi eficaz e todos aprenderam em conjunto. 
 
 # :pushpin:Integrantes
