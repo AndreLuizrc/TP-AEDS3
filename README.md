@@ -136,6 +136,29 @@ A classe `Categoria` implementa a interface `Registro` e representa uma categori
 - `byte[] toByteArray()`: Converte o objeto `Categotia` em um array de bytes para armazenamento. Isso inclui o ID e nome do objeto.
 - `void fromByteArray(byte[] b)`: Reconstrói o objeto `Categoria` a partir de um array de bytes. Lê os dados armazenados, incluindo o ID e o nome.
 
+## Classe Rotulo
+
+A classe `Rotulo` implementa a interface `Registro` e é usada para representar um relacionamento entre uma categoria e um status de tarefa. Contém informações como o ID do relacionamento, o ID da categoria e o ID do status.
+
+### Construtores
+
+- **Rotulo()**: Inicializa um objeto Rotulo com os IDs de relacionamento, categoria e status configurados como -1.
+- **Rotulo(int categoriaId, int statusId)**: Inicializa um objeto Rotulo com o ID de relacionamento como -1, e os IDs de categoria e status conforme os parâmetros fornecidos.
+- **Rotulo(int idRelacionamento, int categoriaId, int statusId)**: Inicializa um objeto Rotulo com os IDs de relacionamento, categoria e status conforme os parâmetros fornecidos.
+
+### Métodos
+- `getStatusId()`: Retorna o ID do status associado ao relacionamento.
+- `getCategoriaId()`: Retorna o ID da categoria associada ao relacionamento.
+- `setId(int id)`: Define o ID de relacionamento.
+- `getId()`: Retorna o ID do relacionamento.
+
+ ### Serialização e Deserialização
+
+- `toByteArray()`: Converte o objeto Rotulo para um array de bytes para armazenamento. Os dados incluem o ID de relacionamento, ID de categoria e ID de status.
+- `fromByteArray(byte[] b)`: Reconstrói o objeto Rotulo a partir de um array de bytes, validando o tamanho do array antes da deserialização.
+- `getStatusName()`: Retorna o nome correspondente ao ID do status associado ao relacionamento, utilizando uma estrutura switch para mapear os valores de status numéricos para seus nomes legíveis.
+
+
 **OBS**: Os métodos e classes que não foram abordados aqui são autoexplicativos ou seguem o mesmo padrão apresentado em sala de aula, o que acreditamos tornar redundantes suas explicações.
 
 ---
