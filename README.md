@@ -158,6 +158,8 @@ A classe `Rotulo` implementa a interface `Registro` e é usada para representar 
 - `fromByteArray(byte[] b)`: Reconstrói o objeto Rotulo a partir de um array de bytes, validando o tamanho do array antes da deserialização.
 - `getStatusName()`: Retorna o nome correspondente ao ID do status associado ao relacionamento, utilizando uma estrutura switch para mapear os valores de status numéricos para seus nomes legíveis.
 
+- Já a classe `ArquivoRotuloStatus`, gerencia rótulos que associam categorias e status, utilizando um arquivo e uma árvore B+ para otimizar buscas. Ela permite criar novos rótulos, registrar relacionamentos entre categorias e status, e associá-los a tarefas. A classe oferece métodos para buscar rótulos por categoria ou status, e imprimir relacionamentos entre tarefas, categorias e status. Também permite imprimir tarefas por status ou por categoria, evitando duplicações. Além disso, ela integra outras classes, como ArquivoCategoria e ArquivoTarefa, para fornecer informações detalhadas sobre as categorias e tarefas associadas aos rótulos.
+
 
 **OBS**: Os métodos e classes que não foram abordados aqui são autoexplicativos ou seguem o mesmo padrão apresentado em sala de aula, o que acreditamos tornar redundantes suas explicações.
 
@@ -167,11 +169,11 @@ A classe `Rotulo` implementa a interface `Registro` e é usada para representar 
 
 Dividimos as tarefas deste trabalho de forma democrática entre os quatro integrantes.
 
-:white_check_mark:Desenvolvimento do programa, Organização e Implementação dos indices e classes - Victor, Douglas  
-:white_check_mark:Arquitetura do projeto, Testes e Documentação - André, João  
+:white_check_mark:Desenvolvimento do programa, Organização e Implementação dos indices e classes - André, João
+:white_check_mark:Arquitetura do projeto, Testes e Documentação - Victor, Douglas
 
-A parte mais desafiadora do projeto foi integrar as entidades tarefa e categoria, mantendo o relacionamento 1:N por meio da árvore B+ e implementando todas as restrições definidas para essas entidades. Durante uma das fases de teste, identificamos um problema ao atualizar a categoria de uma tarefa: mesmo após a atualização, a tarefa permanecia vinculada à categoria anterior. No entanto, conseguimos identificar a causa do erro e corrigi-lo.
-Todos os requisitos foram implementados com sucesso. Como já havíamos trabalhado juntos anteriormente, a colaboração foi eficaz e todos aprenderam em conjunto. Embora alguns problemas tenham surgido, a maior parte do código foi discutida em sala de aula, o que facilitou a implementação. No entanto, sentimos um aumento na complexidade em relação ao primeiro trabalho, especialmente devido ao número maior de classes, estruturas de armazenamento e restrições que precisaram ser aplicadas aos processos do sistema
+A parte mais desafiadora do projeto foi gerenciar a sincronização entre a leitura e gravação de dados nos sistemas de arquivos, que deve respeitar as entidades e manter seus respectivos relacionamentos. Durante essa etapa não tivemos problemas de implementação graves, apenas pequenos erros de coerência entre as classes e seus métodos e como a maior parte do código foi discutida em sala de aula, facilitou a compreensão das funções.
+Todos os requisitos foram implementados com sucesso. Como já havíamos trabalhado juntos anteriormente, a colaboração foi eficaz e todos aprenderam em conjunto. 
 
 # :pushpin:Integrantes
 
