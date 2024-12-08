@@ -1,5 +1,7 @@
+import Utils.MenuBackups;
 import Utils.MenuCategorias;
 import Utils.MenuTarefas;
+import Utils.MenuBackups;
 
 import java.util.Scanner;
 
@@ -18,6 +20,7 @@ public class IO {
                 System.out.println("\n> Início");
                 System.out.println("1 - Categorias");
                 System.out.println("2 - Tarefas");
+                System.out.println("3 - Back-ups");
                 System.out.println("0 - Sair");
 
                 System.out.print("Opcao: ");
@@ -34,6 +37,8 @@ public class IO {
                     case 2:
                         (new MenuTarefas()).menu();
                         break;
+                    case 3:
+                        (new MenuBackups()).menu();
                     case 0:
                         break;
                     default:
