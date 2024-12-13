@@ -1,18 +1,18 @@
 #  :pushpin:Checklist Obrigatório
 
-- O índice invertido com os termos das tarefas foi criado usando a classe ListaInvertida? **SIM** :white_check_mark:
-- O CRUD de rótulos foi implementado? **SIM** :white_check_mark:
-- No arquivo de tarefas, os rótulos são incluídos, alterados e excluídos em uma árvore B+? **SIM** :white_check_mark:
-- É possível buscar tarefas por palavras usando o índice invertido? **SIM** :white_check_mark:
-- É possível buscar tarefas por rótulos usando uma árvore B+? **SIM** :white_check_mark:
-- O trabalho está completo? **SIM** :white_check_mark:
-- O trabalho é original e não a cópia de um trabalho de um colega? **SIM** :white_check_mark:
+- Há uma rotina de compactação usando o algoritmo LZW para fazer backup dos arquivos? :white_check_mark:
+- Há uma rotina de descompactação usando o algoritmo LZW para recuperação dos arquivos? :white_check_mark:
+- O usuário pode escolher a versão a recuperar? :white_check_mark:
+- Qual foi a taxa de compressão alcançada por esse backup? (Compare o tamanho dos arquivos compactados com os arquivos originais) :white_check_mark: ~50%, o arquivo original tem ~4.5kb e o backup possui ~2kb 
+- O trabalho está funcionando corretamente? :white_check_mark:
+- O trabalho está completo? :white_check_mark:
+- O trabalho é original e não a cópia de um trabalho de um colega? :white_check_mark:
 
 ---
 
 # :pushpin:Sobre o Trabalho
 
-O objetivo deste trabalho é implementar um sistema de gerenciamento de tarefas que utilize uma tabela hash extensível para o índice direto e uma árvore B+ para indexação do relacionamento 1:N entre tarefas e categorias. Também envolve implementar um índice invertido para busca de tarefas, usando as palavras da descrição e ordenando os resultados por relevância (TFxIDF). Criar uma entidade de rótulos, armazená-los em uma árvore B+ e implementar CRUD. Além disso, é necessário estabelecer um relacionamento N:N entre tarefas e rótulos, permitindo vinculação e exclusão dinâmica, bem como buscas eficientes por termos, categorias e rótulos.
+O objetivo deste trabalho é implementar um sistema de gerenciamento de tarefas com backup, que utilize uma tabela hash extensível para o índice direto e uma árvore B+ para indexação do relacionamento 1:N entre tarefas e categorias. Também envolve implementar um índice invertido para busca de tarefas, usando as palavras da descrição e ordenando os resultados por relevância (TFxIDF). Criar uma entidade de rótulos, armazená-los em uma árvore B+ e implementar CRUD. Além disso, é necessário estabelecer um relacionamento N:N entre tarefas e rótulos, permitindo vinculação e exclusão dinâmica, bem como buscas eficientes por termos, categorias e rótulos.
 
 ---
 
